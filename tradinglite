@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আমার প্রফেশনাল ট্রেডিং চার্ট</title>
+    <style>
+        /* CSS কোড: চার্টকে পুরো স্ক্রিন জুড়ে দেখানোর জন্য */
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%; /* সম্পূর্ণ উচ্চতা ব্যবহার করো */
+            width: 100%; /* সম্পূর্ণ প্রস্থ ব্যবহার করো */
+            overflow: hidden; /* স্ক্রলবার লুকানো হলো */
+            background-color: #1e222d; /* ট্রেডিং এর জন্য ডার্ক ব্যাকগ্রাউন্ড */
+        }
+
+        #chart-wrapper {
+            width: 100%;
+            height: 100%;
+            position: relative; /* ফুলস্ক্রিন বাটন এর জন্য প্রয়োজন */
+        }
+        
+        /* 'Full Screen' লেখার বদলে আইকনের জন্য নতুন CSS */
+        .fullscreen-button {
+            position: absolute;
+            top: 15px; /* উপর থেকে একটু নিচে নামানো হলো */
+            right: 15px; /* ডান দিক থেকে একটু সরে গেল */
+            z-index: 1000; /* চার্টের উপরে বাটনটি রাখার জন্য */
+            padding: 10px; /* আইকনটিকে দেখতে আরও ভালো করার জন্য */
+            background-color: transparent; /* ব্যাকগ্রাউন্ড কালার বাদ দেওয়া হলো */
+            color: #ffffff; /* আইকনের রং সাদা করা হলো */
+            border: 2px solid #007bff; /* নীল রঙের বর্ডার দেওয়া হলো */
+            border-radius: 6px; /* কোণাগুলো গোলাকার করা হলো */
+            cursor: pointer;
+            font-size: 20px; /* আইকনের আকার বড় করা হলো */
+            line-height: 1; /* আইকন এবং টেক্সটের উচ্চতা ঠিক রাখা হলো */
+            transition: background-color 0.3s, border-color 0.3s, transform 0.2s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .fullscreen-button:hover {
+            background-color: rgba(0, 123, 255, 0.1); /* হোভারে হালকা নীল ব্যাকগ্রাউন্ড */
+            border-color: #0099ff;
+            transform: scale(1.05); /* হোভারে সামান্য বড় হবে */
+        }
+        
+        /* ফুলস্ক্রিন মোডের জন্য CSS (আগের মতোই রাখা হলো) */
+        .full-screen-mode {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 9999; 
+        }
+
+        /* আইকনের স্টাইল */
+        .icon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            vertical-align: middle;
+            fill: currentcolor;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="chart-wrapper">
+        <button class="fullscreen-button" id="fullscreen-toggle" aria-label="Toggle Full Screen">
+            <svg class="icon" viewBox="0 0 24 24" id="fullscreen-icon">
+                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+            </svg>
+        </button>
+
+        <div class="tradingview-widget-container" style="height: 100%; width: 100%;">
+            <div id="tradingview_chart" style="height: 100%; width: 100%;"></div>
+            
+            <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+            <script type="text/javascript">
+            
+            // 1. TradingView Widget Configuration (পরিবর্তন করা হলো)
+            new TradingView.widget(
+            {
+                "width": "100%",
+                "height": "100%",
+                "symbol": "BINANCE:BTCUSDT", 
+                "interval": "60",
+                "timezone": "Etc/UTC",
+                "theme": "dark", 
+                "style": "1", 
+                "locale": "en", 
+                "toolbar_bg": "#f1f3f6",
+                "enable_publishing": false,
+                "allow_symbol_change": true,
+                "withdateranges": true,
+                "hide_side_toolbar": false,
+                "details": true,
+                "hotlist": false,
+                "calendar": false,
+                
+                // === এই অংশ দুটি আপনার চাহিদা অনুযায়ী পরিবর্তন করা হয়েছে ===
+                "studies": [], // ★ ডিফল্টভাবে কোনো ইন্ডিকেটর লোড হবে না।
+                
+                "save_image": false, // ★ এটি সেভিংস ফিচারকে ডিসেবল করে দেয়। 
+                "client_id": "none", // ★ সেভিংস এবং ড্রয়িং ধরে রাখতে না দেওয়ার জন্য একটি অ-অনন্য আইডি ব্যবহার করা হলো।
+                "user_id": "none", // ★ সেভিংস এবং ড্রয়িং ধরে রাখতে না দেওয়ার জন্য একটি অ-অনন্য আইডি ব্যবহার করা হলো।
+                "autosize": true, // চার্টটিকে পুরোপুরি ফিট করার জন্য
+                "container_id": "tradingview_chart"
+            }
+            );
+
+            // 2. Full Screen Toggle Logic (আগের মতোই রাখা হলো)
+            const wrapper = document.getElementById('chart-wrapper');
+            const toggleButton = document.getElementById('fullscreen-toggle');
+            const iconElement = document.getElementById('fullscreen-icon');
+            let isFullScreen = false;
+            
+            const fullScreenPath = 'M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z';
+            const exitFullScreenPath = 'M5 16h3v3h2v-5H5v2zm3-6H5v2h5V7H8v3zm11 3h-2v-3h-3V7h5v5zm-2 4h-3v2h5v-5h-2v3z';
+
+            function updateIcon(isExiting) {
+                iconElement.querySelector('path').setAttribute('d', isExiting ? exitFullScreenPath : fullScreenPath);
+                toggleButton.setAttribute('aria-label', isExiting ? 'Exit Full Screen' : 'Toggle Full Screen');
+            }
+
+            function toggleFullScreen() {
+                if (!document.fullscreenElement) {
+                    wrapper.requestFullscreen().then(() => {
+                        isFullScreen = true;
+                        updateIcon(true);
+                    }).catch(err => {
+                        wrapper.classList.add('full-screen-mode');
+                        isFullScreen = true;
+                        updateIcon(true);
+                    });
+                } else {
+                    document.exitFullscreen().then(() => {
+                        isFullScreen = false;
+                        updateIcon(false);
+                    }).catch(err => {
+                        wrapper.classList.remove('full-screen-mode');
+                        isFullScreen = false;
+                        updateIcon(false);
+                    });
+                }
+            }
+            
+            toggleButton.addEventListener('click', toggleFullScreen);
+
+            document.addEventListener('fullscreenchange', () => {
+                if (!document.fullscreenElement) {
+                    wrapper.classList.remove('full-screen-mode');
+                    isFullScreen = false;
+                    updateIcon(false);
+                }
+            });
+
+            </script>
+        </div>
+    </div>
+
+</body>
+</html>
